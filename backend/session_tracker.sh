@@ -9,7 +9,7 @@ for i in $(seq 1 30);do
 		sleep 1
 		continue
 	else
-        today=date  "+%Y-%m-%d"
+        today=`date  "+%Y_%m_%d"`
         today_audit_dir="logs/audit/$today"
         if [ -d $today_audit_dir ]
         then
