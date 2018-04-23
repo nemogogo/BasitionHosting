@@ -1,0 +1,11 @@
+
+{% extends 'base.html' %}
+{% block  body %}
+<div class="panel-success col-lg-5 col-md-offset-3 text-center text-danger">
+    <h1>{{ response.status_code }}</h1>
+
+    {% for k,v in response.data.items %}
+  <h1>{{ v }}</h1>
+{% endfor %}
+</div>
+{% endblock %}

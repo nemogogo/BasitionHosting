@@ -1,0 +1,18 @@
+{% extends 'login.html' %}
+{% block form %}
+
+<form method="post">
+<h2 class="fa-align-center">Register your account</h2>
+    {% csrf_token %}
+    <div class="form-group">
+ <table class="table-primary" style="color:black">
+        {{ form.as_table }}
+ </table>
+    </div>
+   <div class="col-xs-4 col-xs-offset-8">
+            <div class="form-group text-right">
+            <button class="btn btn-success text-uppercase" type="submit">Register</button>
+            </div>
+        </div>
+</form>
+{% endblock %}

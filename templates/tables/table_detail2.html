@@ -1,0 +1,45 @@
+{% extends 'index.html' %}
+{% block page-content %}
+    {% load temtags %}
+ <ol class="breadcrumb">
+        <li><a href="{% url 'index' %}">{{app_name  }}</a></li>
+        <li><a href="#">{{ table_name }}</a></li>
+        <li class="active"></li>
+    </ol>
+
+ <div class="panel-success">
+<thead><h2>{{ table_name}}</h2></thead>
+{% if fields %}
+ <table class="table table-hover">
+
+<thead>
+
+<tr>
+{% for field in fields %}
+    <td><strong>{{ field }}</strong></td>
+    {% endfor %}
+<td><strong>操作</strong></td>
+
+</tr>
+</thead>
+ <tbody>
+ {% for obj in query_set %}
+     <tr>
+    {% for field in fields %}
+         {% if field == 'id' %}
+         <td><a>{% get_field_value obj field %}</a></td>
+             {% else %}
+           <td>{% get_field_value obj field %}</td>
+        {% endif %}
+    {% endfor%}
+     <td><a>添加</a>|<a>删除</a></td>
+    </tr>
+  {% endfor %}
+ </tbody>
+ </table>
+{% else %}
+    <h3>暂无 {{ table_name }} 相关数据</h3>
+ {% endif %}
+ </div>
+
+{% endblock %}

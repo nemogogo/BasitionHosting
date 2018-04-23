@@ -1,0 +1,159 @@
+{% extends 'index.html' %}
+{% block page-content %}
+    {% load temtags %}
+    <ol class="breadcrumb">
+        <li><a href="{% url 'index' %}">{{app_name  }}</a></li>
+        <li><a href="#">{{ table_name }}</a></li>
+        <li class="active"></li>
+    </ol>
+
+ <div class="panel-success">
+<thead><h2>{{ table_name}}</h2> <button class="btn btn-info"><a href="{% url 'table_data' app_name table_name  %}add" >添加</a></button></thead>
+{% if fields %}
+    <div class="panel col-sm-8">
+
+    <form method="get" class="form-horizontal">
+
+        <div class="form-group  "  >
+        {% if model_admin.list_filters %}
+
+         {% for field in model_admin.list_filters %}
+
+                 <label for="{{ field }}">{{ field.upper }}</label>
+             {% build_filter_field   field model_admin filter_condtions%}
+
+
+         {% endfor%}
+
+         {% endif %}
+        </div>
+
+        <div class="form-group "　>
+        <input type="search" class="form-control"  name="_q" \
+               value="{{ search_text }}"
+
+        {% if model_admin.search_fields %}placeholder= "search {% for search_field in model_admin.search_fields %}
+        {{ search_field }},
+        {% endfor %} "
+            {% else %}
+             placeholder="没有可以搜索的数据"
+            {% endif %}>
+
+        </div>
+       <div class="form-group "　>
+        <button class=" btn-success btn ">提交</button>
+
+        </div>
+
+
+
+
+    </form>
+
+    </div>
+
+    <table class="table table-hover">
+  <thead>
+
+<tr>
+
+{% for field in fields %}
+
+    {% if forloop.revcounter  == 1 %}
+
+        <td><strong>{{ table_name }}</strong></td>
+    {% else %}
+    <td><strong>{{ field }}</strong></td>
+    {% endif %}
+    {% endfor %}
+<td><strong>操作</strong></td>
+
+</tr>
+</thead>
+  <tbody>
+  {% csrf_token %}
+ {% for obj in data  %}
+
+  <tr>
+      {% for k,v in obj.items %}
+
+          {% if k == 'id' %}
+              <td><a><strong>{{ v }}</strong></a></td>
+           {% else %}
+          <td>{{ v }}</td>
+          {% endif %}
+      {% endfor %}
+
+  <td> <a href="{% url 'table_change' app_name table_name  obj.id %}">编辑</a>|<a class="deletelink" href="#"> 删除 </a> </td>
+  </tr>
+
+
+{% endfor %}
+ </tbody>
+  </table>
+
+    <nav aria-label="Page navigation">
+    <ul class="pagination">
+
+	 <nav aria-label="Page navigation">
+  <ul class="pagination">
+    <li>
+      <a href="?page=1"aria-label="Previous">
+        <span aria-hidden="true">首页</span>
+      </a>
+    </li>
+
+    <li>{% if pg.page.has_previous %}
+      <a href="?page={{ pg.page.previous_page_number }}"aria-label="Previous">
+       {% endif %}
+        <span aria-hidden="true">上一页</span>
+      </a>
+    </li>
+
+     {% build_pagination pg %}
+
+    <li>{% if pg.page.has_next %}
+      <a href="?page={{ pg.page.next_page_number}}" aria-label="Next">
+      {% endif %}
+        <span aria-hidden="true">下一页</span>
+      </a>
+    </li>
+    <li>
+      <a href="?page={{ pg.page.paginator.num_pages }}"aria-label="Previous">
+        <span aria-hidden="true">尾页</span>
+      </a>
+    </li>
+
+  </ul>
+</nav>
+    <div>共有{{ pg.page.paginator.count }} 条数据 共 {{ pg.page.paginator.num_pages }}页| 当前第<span>{{ pg.page.number}}页</span></div>
+{% else %}
+    <h3>暂无 {{ table_name }} 相关数据</h3>
+ {% endif %}
+</div>
+
+{% endblock %}
+{% block extra-bottom-js %}
+    <script>
+    $('.deletelink').click(function () {
+        var csrftoken= $('input[name="csrfmiddlewaretoken"]').val();
+       var id=$(this).parent().parent().children().first().first().text();
+
+        $.ajax(
+            {
+            url:"http://127.0.0.1:8000/{{app_name}}/{{  table_name}}/"+id ,
+            type:"delete",
+            data:{"csrfmiddlewaretoken":csrftoken},
+            success:function (agr) {
+
+             if (JSON.parse(agr)['status']==0){
+                  window.location.href = "{% url 'table_data' app_name table_name %}";
+             }
+            }
+
+        }
+    )
+    })
+
+    </script>
+{% endblock %}

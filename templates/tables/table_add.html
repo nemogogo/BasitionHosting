@@ -1,0 +1,11 @@
+{% extends 'index.html' %}
+{% block page-content %}
+    {% load temtags %}
+    <form method="POST">
+    <table class="table table-responsive">
+        {{ form_obj.errors }}
+    {{ form_obj.as_table }}
+    </table>
+    <div class="btn-group pull-right " ><button class="btn-danger btn" ><a href="{% url 'table_data' self.app_name self.table_name %} ">返回</a></button>   <button type="submit" class="btn btn-success ">提交</button></div>
+    </form>
+{% endblock %}
